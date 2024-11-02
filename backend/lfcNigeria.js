@@ -8,6 +8,9 @@ import morgan from "morgan"
 import authrouter from "./routes/authrouter.js"
 import productRouter from "./routes/productRoutes.js";
 import categoryRouter from "./routes/categoryRoutes.js";
+import uploadRouter from "./routes/uploadRoutes.js";
+import path from "path"
+import orderRouter from './routes/orderRoutes.js'
 const port = process.env.PORT
 connectDB();
 const app = express();
@@ -15,11 +18,15 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
+app.use("/api/upload", uploadRouter);
 
 app.use("/api/user", authrouter)
 app.use("/api/product", productRouter);
 app.use("/api/category", categoryRouter);
+app.use('/api/order', orderRouter);
+const __dirname = path.resolve();
 
+app.use('/uploads', express.static(path.join(__dirname + 'uploads')))
 
 app.use("*", (req, res) => {
     res.status(404).json({
